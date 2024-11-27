@@ -75,6 +75,29 @@ def main():
                     
                     st.subheader("📋 최종 리뷰 보고서")
                     st.write(final_report)
+            
+            # 추가 질문 섹션
+            st.subheader("💭 추가 질문하기")
+            user_question = st.text_input("논문에 대해 궁금한 점을 질문해주세요")
+            
+            if user_question and st.button("질문하기"):
+                with st.spinner("답변을 생성 중입니다..."):
+                    genai.configure(api_key=api_key)
+                    model = genai.GenerativeModel('gemini-pro')
+                    question_prompt = f"""
+                    다음 논문 내용을 바탕으로 질문에 답변해주세요:
+                    
+                    논문 내용:
+                    {text}
+                    
+                    질문: {user_question}
+                    
+                    답변은 명확하고 이해하기 쉽게 작성해주세요.
+                    """
+                    response = model.generate_content(question_prompt)
+                    
+                    st.subheader("🤖 답변")
+                    st.write(response.text)
                     
         except Exception as e:
             st.error(f"오류가 발생했습니다: {str(e)}")
